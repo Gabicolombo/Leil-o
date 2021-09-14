@@ -6,10 +6,20 @@ const usuario = require('./database/user')
 const app = express()
 const door = 2828
 
+//const diretorio = path.join(__dirname, './public')
+//const html = path_join(__dirname, './public/index.html')
+
+
+
 app.use(bodyParser.json())
 
-app.get('/', (req, res) =>{
-    res.send('ok')
+app.get('/', async(req, res) =>{
+    try{
+        const valores = await usuario.find({})
+        res.send(valores)
+    }catch(err){
+        res.send(err)
+    }
 })
 
 app.post('/cadastro', async(req, res)=>{
@@ -19,7 +29,7 @@ app.post('/cadastro', async(req, res)=>{
         if(await usuario.findOne({email})){
             return res.send('Esse usuário já existe')
         }
-        console.log('aq')
+        
         const user = await usuario.create(req.body)
         console.log('user:' + user)
         user.senha = undefined
