@@ -14,6 +14,15 @@ const UserSchema = new mongoose.Schema({
         required: true,
         lowercase: true
     },
+    CPF:{
+        type: Number,
+        unique: true,
+        required: true
+    },
+    Endereco:{
+        type:String,
+        required: true
+    },
     senha:{
         type:String,
         required:true,

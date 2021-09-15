@@ -6,9 +6,10 @@ const usuario = require('./database/user')
 const app = express()
 const door = 2828
 
-//const diretorio = path.join(__dirname, './public')
-//const html = path_join(__dirname, './public/index.html')
-
+app.use(express.static(path.join(__dirname, 'public')))
+app.set('views', path.join(__dirname, 'public'))
+app.engine('html', require('ejs').renderFile)
+app.set('view engine', 'html')
 
 
 app.use(bodyParser.json())
@@ -20,6 +21,10 @@ app.get('/', async(req, res) =>{
     }catch(err){
         res.send(err)
     }
+})
+
+app.get('/cadastro', (req, res)=>{
+    res.render('index.html')
 })
 
 app.post('/cadastro', async(req, res)=>{
