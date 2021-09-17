@@ -1,7 +1,13 @@
 
 const form = document.querySelector('form')
-//const input = document.querySelector('input')
+const input = document.querySelector('input')
 
-form.addEventListener('submit', ()=>{
-    console.log('testando')
+form.addEventListener('submit', (event)=>{
+    event.preventDefault()
+
+    fetch('/cadastro').then((response)=>{
+        response.json().then((data)=>{
+            console.log(data)
+        })
+    })
 })

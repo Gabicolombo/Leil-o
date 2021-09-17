@@ -19,7 +19,7 @@ const UserSchema = new mongoose.Schema({
         unique: true,
         required: true
     },
-    Endereco:{
+    endereco:{
         type:String,
         required: true
     },
@@ -27,10 +27,6 @@ const UserSchema = new mongoose.Schema({
         type:String,
         required:true,
         select:false
-    },
-    data:{
-        type:Date,
-        default:Date.now
     }
 })
 
@@ -39,5 +35,5 @@ UserSchema.pre('save', async function(prox){
     this.senha = hash
 })
 
-const user = mongoose.model('User', UserSchema)
+const user = mongoose.model('Usuarios', UserSchema)
 module.exports = user

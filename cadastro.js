@@ -13,6 +13,7 @@ app.set('view engine', 'html')
 
 
 app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', async(req, res) =>{
     try{
@@ -30,20 +31,20 @@ app.get('/cadastro', (req, res)=>{
 app.post('/cadastro', async(req, res)=>{
     console.log(req.body)
     const {email} = req.body
+    const {CPF} = req.body
     try{
-        if(await usuario.findOne({email})){
+        if(await usuario.findOne({email}) || await usuario.findOne({CPF})){
             return res.send('Esse usuário já existe')
         }
         
-        const user = await usuario.create(req.body)
-        console.log('user:' + user)
-        user.senha = undefined
+        const result = await usuario.create(req.body)
+        console.log('result:' + result)
+        result.senha = undefined
         res.send('Usuário cadastrado com sucesso')
 
     }catch (e){
         res.send('Erro no registro')
     }
-    
 })
 
 app.listen(door, ()=>{
