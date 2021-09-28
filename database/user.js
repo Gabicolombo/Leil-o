@@ -1,12 +1,17 @@
 const mongoose = require('mongoose')
 mongoose.connect('mongodb://localhost/leilao')
 const bcryptjs = require('bcryptjs')
+const { CommandSucceededEvent } = require('mongodb')
 //mongoose.Promise = global.Promise
 
 const UserSchema = new mongoose.Schema({
     nome:{
         type: String,
         required: true
+    },
+    username:{
+        type:String,
+        required:true
     },
     email:{
         type: String,
@@ -17,7 +22,13 @@ const UserSchema = new mongoose.Schema({
     CPF:{
         type: Number,
         unique: true,
-        required: true
+        required: true,
+        minlength:11,
+        validate(value){
+            if(value.toString().length != 11){
+                throw new Error('CPF inválido!!')
+            }
+        }
     },
     endereco:{
         type:String,
