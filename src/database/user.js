@@ -1,5 +1,4 @@
-const mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost/leilao')
+const mongoose = require('./mongoConnection')
 const bcryptjs = require('bcryptjs')
 const { CommandSucceededEvent } = require('mongodb')
 //mongoose.Promise = global.Promise
@@ -9,7 +8,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    username:{
+    apelido:{
         type:String,
         required:true
     },
@@ -19,16 +18,10 @@ const UserSchema = new mongoose.Schema({
         required: true,
         lowercase: true
     },
-    CPF:{
-        type: Number,
+    cpf:{
+        type: String,
         unique: true,
         required: true,
-        minlength:11,
-        validate(value){
-            if(value.toString().length != 11){
-                throw new Error('CPF inválido!!')
-            }
-        }
     },
     endereco:{
         type:String,

@@ -1,39 +1,41 @@
 const express = require('express')
 const path = require('path')
 const bodyParser = require('body-parser')
-const usuario = require('./database/user')
+const usuario = require('./src/database/user')
 const bcryptjs = require('bcryptjs')
+const cors = require('cors')
 const { count } = require('console')
 
 const app = express()
 const door = 2828
 
-app.use(express.static(path.join(__dirname, 'public')))
-app.set('views', path.join(__dirname, 'public'))
+//app.use(express.static(path.join(__dirname, 'public')))
+//app.set('views', path.join(__dirname, 'public'))
 app.engine('html', require('ejs').renderFile)
 app.set('view engine', 'html')
 
-
+app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', async(req, res) =>{
 
-    const {username} = req.body
+    const {apelido} = req.body
     const {senha} = req.body
     try{
-        const usuarioCadastrado = await usuario.find({username}).select('+senha')
+        const usuarioCadastrado = await usuario.find({apelido}).select('+senha')
         
         if(usuarioCadastrado.length === 0){
-            return res.send(' usuário não cadastrado')
+            return res.status(400).json({error:' usuário não cadastrado'})
         }
         
         const comparaSenha = await bcryptjs.compare(senha, usuarioCadastrado[0].senha)
+        console.log(comparaSenha)
         if(!comparaSenha){
-            return res.status(400).send('Senha inválida')
+            return res.status(400).json({error: 'Senha inválida'})
         }
         
-        res.send('bem vinda(o)')
+        res.status(200).send('bem vinda(o)')
 
 
     }catch(err){
@@ -42,29 +44,23 @@ app.get('/', async(req, res) =>{
 })
 
 
-app.get('/cadastro', (req, res)=>{
-    res.render('cadastro.html')
-})
-
 app.post('/cadastro', async(req, res)=>{
     console.log(req.body)
     const {email} = req.body
-    const {CPF} = req.body
-    const {username} = req.body
+    const {cpf} = req.body
+    const {apelido} = req.body
     try{
-        if(await usuario.findOne({email}) || await usuario.findOne({CPF}) || await usuario.findOne({username})){
-            return res.send('Esse usuário já existe')
+        if(await usuario.findOne({email}) || await usuario.findOne({cpf}) || await usuario.findOne({apelido})){
+          return res.status(400).json({error: 'Esse usuário já existe'})
         }
-        
-        
         
         const result = await usuario.create(req.body)
         console.log('result:' + result)
         result.senha = undefined
-        res.send('Usuário cadastrado com sucesso')
+        res.status(200).send('Usuário cadastrado com sucesso')
 
     }catch (e){
-        res.send('Erro no registro')
+        res.status(400).json({error:'Erro no registro'})
     }
 })
 
