@@ -24,5 +24,17 @@ router.post('/cadastro', async(req, res)=>{
     }
 })
 
+router.get('/cadastro', async(req, res)=>{
+    try{
+        const users = await usuario.find({})
+        if(!users){
+            return res.status(404).json({error:'Sem usuários'})
+        }
+        res.send(users)
+    }catch(e){
+        res.status(500).send(e)
+    }
+})
+
 module.exports = router
 
