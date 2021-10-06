@@ -5,10 +5,10 @@ const router = express.Router()
 
 router.post('/', async(req, res) =>{
 
-    const {apelido} = req.body
+    const {email} = req.body
     const {senha} = req.body
     try{
-        const usuarioCadastrado = await usuario.find({apelido}).select('+senha')
+        const usuarioCadastrado = await usuario.find({email}).select('+senha')
         
         if(usuarioCadastrado.length === 0){
             return res.status(400).json({error:' usuário não cadastrado'})
