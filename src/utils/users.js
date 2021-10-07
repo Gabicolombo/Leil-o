@@ -1,13 +1,13 @@
 const users = []
 
 // Join user to chat
-function userJoin(id, apelido, sala) {
-    const user = { id, apelido, sala };
+function userJoin(id, nome, sala) {
+    const user = { id, nome, sala };
   
     users.push(user);
   
     return user;
-  }
+}
 
 // get current user
 function getCurrentUser(id){
