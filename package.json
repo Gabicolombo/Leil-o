@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node main.js",
-    "dev": "nodemon main.js"
+    "start": "node src/server.js",
+    "dev": "nodemon -w src --exec \" babel-node src/server.js --presets env \"",
+    "build": "babel src -s -D -d dist --presets env",
+    "start:prod": "node dist"
   },
   "keywords": [],
   "author": "",
@@ -22,5 +24,9 @@
     "nodemon": "^2.0.13",
     "socket.io": "^4.2.0",
     "yarn": "^1.22.11"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0"
   }
 }

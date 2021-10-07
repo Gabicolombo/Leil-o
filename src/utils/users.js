@@ -3,6 +3,11 @@ const users = []
 // Join user to chat
 function userJoin(id, nome, sala) {
     const user = { id, nome, sala };
+
+    // verifica se usuario já está na sala
+    const userInRoom = users.find((user) => user.nome == nome && user.sala === sala);
+    
+    if (userInRoom) userInRoom.id = 
   
     users.push(user);
   

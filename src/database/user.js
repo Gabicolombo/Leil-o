@@ -1,7 +1,5 @@
-const mongoose = require('./mongoConnection')
-const bcryptjs = require('bcryptjs')
-const { CommandSucceededEvent } = require('mongodb')
-//mongoose.Promise = global.Promise
+import mongoose from 'mongoose';
+import bcryptjs from 'bcryptjs';
 
 const UserSchema = new mongoose.Schema({
     nome:{
