@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
-export default async () => {
+module.exports = async () => {
     try {
       const url = "mongodb://localhost/leilao";
       await mongoose.connect(url);

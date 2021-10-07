@@ -1,12 +1,12 @@
-import express from 'express';
-import http from 'http';
-import { Server } from 'socket.io';
-import cors from 'cors';
+const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
+const cors = require('cors');
 
-import databaseConnection from './database/mongoConnection';
+const databaseConnection = require('./database/mongoConnection');
 
-import routerCadastro from './routes/cadastro';
-import routerLogin from './routes/cadastro';
+const routerCadastro = require('./routes/cadastro');
+const routerLogin = require('./routes/cadastro');
 
 const app = express();
 const serverHttp = http.createServer(app);

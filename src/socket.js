@@ -1,6 +1,6 @@
-import { io } from './http';
-import {userJoin, getCurrentUser, userLeave, getRoomUsers} from './utils/users';
-import formataMsg from './utils/messages';
+const { io } = require('./http');
+const {userJoin, getCurrentUser, userLeave, getRoomUsers} = require('./utils/users');
+const formataMsg = require('./utils/messages');
 
 const nomeBot = 'Watson'
 

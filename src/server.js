@@ -1,5 +1,5 @@
-import { serverHttp } from './http';
-import './socket';
+const {serverHttp} = require('./http');
+require('./socket');
 
 const port = process.env.PORT || 2828;
 
