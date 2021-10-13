@@ -3,11 +3,10 @@ const usuario = require('../database/user')
 const bcryptjs = require('bcryptjs')
 const router = express.Router()
 
-router.post('/', async(req, res) =>{
+router.post('/login', async(req, res) =>{
 
-    const {email} = req.body
-    const {senha} = req.body
-    try{
+    const { email, senha } = req.body
+    try {
         const usuarioCadastrado = await usuario.find({email}).select('+senha')
         
         if(usuarioCadastrado.length === 0){

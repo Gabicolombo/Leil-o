@@ -6,7 +6,7 @@ const cors = require('cors');
 const databaseConnection = require('./database/mongoConnection');
 
 const routerCadastro = require('./routes/cadastro');
-const routerLogin = require('./routes/cadastro');
+const routerLogin = require('./routes/login');
 
 const app = express();
 const serverHttp = http.createServer(app);

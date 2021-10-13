@@ -6,9 +6,7 @@ const router = express.Router()
 
 router.post('/cadastro', async(req, res)=>{
     console.log(req.body)
-    const {email} = req.body
-    const {cpf} = req.body
-    const {apelido} = req.body
+    const { email, cpf, apelido } = req.body
     try{
         if(await usuario.findOne({email}) || await usuario.findOne({cpf}) || await usuario.findOne({apelido})){
           return res.status(400).json({error: 'Esse usuário já existe'})
