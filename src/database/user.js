@@ -27,15 +27,26 @@ const UserSchema = new mongoose.Schema({
     },
     senha:{
         type:String,
-        required:true,
-        select:false
-    }
+        trim:true,
+        select:false,
+        required:true
+    },
+    tokens:[{
+        token:{
+            type:String,
+            required:true
+        }
+    }]
 })
 
 UserSchema.pre('save', async function(prox){
-    const hash = await bcryptjs.hash(this.senha, 10)
+    const hash = await bcryptjs.hash(this.senha, 8)
     this.senha = hash
+
+    prox()
 })
 
-const user = mongoose.model('Usuarios', UserSchema)
-module.exports = user
+
+
+const User = mongoose.model('Usuarios', UserSchema)
+module.exports = User

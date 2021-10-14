@@ -5,7 +5,6 @@ const router = express.Router()
 
 
 router.post('/cadastro', async(req, res)=>{
-    console.log(req.body)
     const {email} = req.body
     const {cpf} = req.body
     const {apelido} = req.body
@@ -16,7 +15,6 @@ router.post('/cadastro', async(req, res)=>{
         
         const result = await usuario.create(req.body)
         
-        result.senha = undefined
         res.status(200).json({message:'Usuário cadastrado com sucesso'})
 
     }catch (e){
