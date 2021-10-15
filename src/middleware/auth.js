@@ -7,10 +7,11 @@ const auth = async(req, res, next)=>{
 
         const token = req.header('Authorization').replace('Bearer ', '')
         const decoded = jwt.verify(token, config.secret)
-
-        const user = await User.findOne({_id:decoded._id, 'tokens.token': token})
-        console.log('Auth user: ' + user)
+        
+        const user = await User.findOne({_id: decoded._id, 'tokens.token':token})
+        
         if(!user){
+            console.log('user here' + user)
             throw new Error()
         }
 
@@ -19,7 +20,8 @@ const auth = async(req, res, next)=>{
         next()
 
     }catch(e){
-        res.status(401).json({error:'Por favor você precisa se autenticar'})
+        res.status(401).send(e.message)
+        //.json({error:'Por favor você precisa se autenticar'})
     }
 }
 
