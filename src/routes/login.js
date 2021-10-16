@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken')
 const config = require('../config/off.json')
 const router = express.Router()
 
-router.post('/', async(req, res) =>{
+router.post('/login', async(req, res) =>{
 
     const {email, senha} = req.body
     console.log('email: ' + email + ' senha: ' + senha)
