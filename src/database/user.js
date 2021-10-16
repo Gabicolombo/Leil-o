@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const bcryptjs = require('bcryptjs');
-const auth = require('../middleware/auth')
 const config = require('../config/off.json')
 const jwt = require('jsonwebtoken')
+const Product = require('./product')
 
 const UserSchema = new mongoose.Schema({
     nome:{
@@ -42,15 +42,11 @@ const UserSchema = new mongoose.Schema({
     }]
 })
 
-UserSchema.methods.toJSON = function() {
-    const user = this
-    const userObject = user.toObject()
-
-    delete userObject.password
-    delete userObject.tokens
-    
-    return userObject
-}
+UserSchema.virtual('products', {
+    ref: 'Product',
+    localField: 'endereco',
+    foreignField: 'localizacao'
+})
 
 UserSchema.methods.generateAuthToken = async function(){
     const user = this
