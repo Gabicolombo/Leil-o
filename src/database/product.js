@@ -23,9 +23,8 @@ const ProductSchema = new mongoose.Schema({
         type:String,
         required:true
     }
-    //imagem:{// foto -> ver video}
+    //imagem:{completar}
 })
-
 
 
 ProductSchema.pre('save', async function(prox){
