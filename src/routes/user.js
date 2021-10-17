@@ -36,10 +36,10 @@ router.post('/login', async(req, res) =>{
         
         const token = await usuarioCadastrado.generateAuthToken()
 
-        res.status(200).send({usuarioCadastrado, token})
+        res.status(200).json({usuarioCadastrado, token})
 
     }catch(err){
-        res.status(404).send('Informações incorretas')
+        res.status(404).json('Informações incorretas')
     }
 })
 
@@ -49,15 +49,15 @@ router.post('/cadastro', async(req, res)=>{
     const {apelido} = req.body
     try{
         if(await usuario.findOne({email}) || await usuario.findOne({cpf}) || await usuario.findOne({apelido})){
-          return res.status(400).send('Email, CPF ou Apelido já registrado')
+          return res.status(400).json('Email, CPF ou Apelido já registrado')
         }
         
         const result = await usuario.create(req.body)
         
-        res.status(200).send('Usuário cadastrado com sucesso')
+        res.status(200).json('Usuário cadastrado com sucesso')
 
     }catch (e){ 
-        res.status(400).send('Erro ao registrar')
+        res.status(400).json('Erro ao registrar')
     }
 })
 
