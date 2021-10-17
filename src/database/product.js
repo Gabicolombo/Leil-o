@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
 
+
 const ProductSchema = new mongoose.Schema({
     nome:{
         type:String,
         required:true
     },
     localizacao:{
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.String,
         required:true,
         ref:'Usuario'
     },
@@ -21,9 +22,15 @@ const ProductSchema = new mongoose.Schema({
     dataFinal:{
         type:String,
         required:true
-    },
-    imagem:{
-        // foto -> ver video
     }
-    // data hora inicio, data hora final, foto
+    //imagem:{completar}
 })
+
+
+ProductSchema.pre('save', async function(prox){
+    const product = this
+    prox()
+})
+
+const Product = mongoose.model('Produtos', ProductSchema)
+module.exports = Product
