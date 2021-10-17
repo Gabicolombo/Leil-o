@@ -46,6 +46,10 @@ UserSchema.virtual('products', {
     ref: 'Product',
     localField: 'endereco',
     foreignField: 'localizacao'
+}, {
+    ref:'Product',
+    localField: 'usuario',
+    foreignField: '_id'
 })
 
 UserSchema.methods.generateAuthToken = async function(){

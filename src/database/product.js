@@ -6,6 +6,11 @@ const ProductSchema = new mongoose.Schema({
         type:String,
         required:true
     },
+    usuario:{
+        type: mongoose.Schema.Types.ObjectId,
+        required:true,
+        ref:'Usuario'
+    },
     localizacao:{
         type: mongoose.Schema.Types.String,
         required:true,
@@ -23,7 +28,9 @@ const ProductSchema = new mongoose.Schema({
         type:String,
         required:true
     }
-    //imagem:{completar}
+    /*imagem:{
+        required:true
+    } */
 })
 
 

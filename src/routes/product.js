@@ -7,10 +7,12 @@ const router = express.Router()
 router.post('/products', auth, async(req, res)=>{
     console.log('aqui')
     console.log(req.user.endereco)
+    console.log(req.user._id)
 
     const produto = new Produto({
         ...req.body,
-        localizacao: req.user.endereco
+        localizacao: req.user.endereco,
+        usuario: req.user._id
     })
 
     try{
@@ -24,13 +26,14 @@ router.post('/products', auth, async(req, res)=>{
 
 router.get('/products', auth, async(req, res)=>{
     const endereco = req.user.endereco
+    const usuarioId = req.user._id
     try{
 
-        const produtos = await Produto.find({endereco, localizacao: req.user.endereco})
+        const produtos = await Produto.find({usuarioId, usuario: req.user._id})
         if(!produtos){
             return res.send('Esse usuário não tem produto cadastrado')
         }
-        console.log(produtos)
+        
         res.status(200).send(produtos)
 
     }catch(e){
