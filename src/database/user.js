@@ -59,11 +59,11 @@ UserSchema.methods.generateAuthToken = async function(){
 UserSchema.statics.credentials = async(email, senha)=>{
     const user = await User.findOne({email}).select('+senha')
    
-    if(!user) throw new Error('Unable to login')
+    if(!user) throw new Error('Usuário não cadastrado')
     
     const comparaSenha = await bcryptjs.compare(senha, user.senha)
     
-    if(!comparaSenha) throw new Error('Unable to login')
+    if(!comparaSenha) throw new Error('Senha incorreta')
 
     return user
 }
