@@ -39,7 +39,7 @@ router.post('/login', async(req, res) =>{
         res.status(200).send({usuarioCadastrado, token})
 
     }catch(err){
-        res.send(err.message)
+        res.status(404).send('Informações incorretas')
     }
 })
 
@@ -49,15 +49,15 @@ router.post('/cadastro', async(req, res)=>{
     const {apelido} = req.body
     try{
         if(await usuario.findOne({email}) || await usuario.findOne({cpf}) || await usuario.findOne({apelido})){
-          return res.status(400).json({error: 'Esse usuário já existe'})
+          return res.status(400).send('Email, CPF ou Apelido já registrado')
         }
         
         const result = await usuario.create(req.body)
         
-        res.status(200).json({message:'Usuário cadastrado com sucesso'})
+        res.status(200).send('Usuário cadastrado com sucesso')
 
-    }catch (e){
-        res.status(400).json({error:'Erro no registro'})
+    }catch (e){ 
+        res.status(400).send('Erro ao registrar')
     }
 })
 
