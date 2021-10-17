@@ -5,8 +5,8 @@ const cors = require('cors');
 
 const databaseConnection = require('./database/mongoConnection');
 
-const routerCadastro = require('./routes/cadastro');
-const routerLogin = require('./routes/login');
+const routerProduct = require('./routes/product');
+const routerUser = require('./routes/user');
 
 const app = express();
 const serverHttp = http.createServer(app);
@@ -15,8 +15,8 @@ const io = new Server(serverHttp, { cors: { origin: '*', methods: '*' } });
 
 app.use(cors());
 app.use(express.json());
-app.use(routerCadastro)
-app.use(routerLogin)
+app.use(routerProduct)
+app.use(routerUser)
 
 
 app.get('/chat', (req, res) => {
