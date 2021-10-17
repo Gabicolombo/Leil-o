@@ -9,7 +9,7 @@ router.post('/products', auth, async(req, res)=>{
     console.log(req.user.endereco)
     console.log(req.user._id)
 
-    if(new Date(req.body.dataInicio+":00") >= new Date(req.body.dataInicial+":00")) {
+    if(new Date(req.body.dataInicio+":00") >= new Date(req.body.dataFinal+":00")) {
         res.status(400).json('Data de término não pode ser inferior a data de início')
         return
     }
