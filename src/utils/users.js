@@ -1,13 +1,14 @@
 const users = []
+const messages = []
 
 // Join user to chat
-function userJoin(id, nome, sala) {
-    const user = { id, nome, sala };
+function userJoin(id, name, room) {
+    const user = { id, name, room };
 
-    // verifica se usuario já está na sala
-    const userInRoom = users.find((user) => user.nome == nome && user.sala === sala);
+    // verifica se usuario já está na room
+    const userInRoom = users.find((user) => user.name == name && user.room === room);
     
-    if (userInRoom) userInRoom.id = 
+    if (userInRoom) userInRoom.id = id;
   
     users.push(user);
   
@@ -29,8 +30,12 @@ function userLeave(id){
 }
 
 // pegar todos os usuários que estão na sala
-function getRoomUsers(sala){
-    return users.filter(user => user.sala === sala)
+function getRoomUsers(room){
+    return users.filter(user => user.room === room)
+}
+
+function getUsers() {
+    return users;
 }
 
 
@@ -38,5 +43,6 @@ module.exports = {
     userJoin,
     getCurrentUser,
     userLeave,
-    getRoomUsers
+    getRoomUsers,
+    getUsers
 }
