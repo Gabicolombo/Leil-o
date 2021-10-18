@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-
 const ProductSchema = new mongoose.Schema({
     nome:{
         type:String,
@@ -27,10 +26,11 @@ const ProductSchema = new mongoose.Schema({
     dataFinal:{
         type:String,
         required:true
-    }
-    /*imagem:{
-        required:true
-    } */
+    },
+    fotoLeilao:{
+         // pnj ou jpg
+        type:Buffer
+    } 
 })
 
 
