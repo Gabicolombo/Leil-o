@@ -13,6 +13,8 @@ const routerLogin = require('./routes/login');
 
 const publicDirectory = resolve(__dirname, '../', 'public');
 
+const routerProduct = require('./routes/product');
+const routerUser = require('./routes/user');
 
 const app = express();
 const serverHttp = http.createServer(app);
@@ -20,17 +22,14 @@ const io = new Server(serverHttp, { cors: { origin: '*', methods: '*' } });
 
 app.use(express.static(publicDirectory));
 
-module.exports = { serverHttp, io };
-
-// app.use(cors());
-// app.use(express.json());
-// app.use(routerCadastro)
-// app.use(routerLogin)
-
-// app.get('/chat', (req, res) => {
-//     res.send('<h1>Hey Socket.io</h1>');
-// });
+app.use(cors());
+app.use(express.json());
+app.use(routerProduct)
+app.use(routerUser)
+app.use(routerCadastro)
+app.use(routerLogin)
 
 databaseConnection();
 
+module.exports = { serverHttp, io };
 
