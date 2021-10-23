@@ -27,9 +27,8 @@ const ProductSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    fotoLeilao:{
-         // pnj ou jpg
-        type:Buffer
+    urlImagem: {
+        type: String
     } 
 })
 

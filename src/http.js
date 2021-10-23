@@ -28,6 +28,7 @@ app.use(routerProduct)
 app.use(routerUser)
 app.use(routerCadastro)
 app.use(routerLogin)
+app.use('/files', express.static(resolve(__dirname, "..", "tmp", "uploads")));
 
 databaseConnection();
 
