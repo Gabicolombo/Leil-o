@@ -13,7 +13,6 @@ const upload = multer({
     limits:{
         fileSize: 10000000 // limite de 1 mega
     },
-    dest: path.resolve(__dirname, "..", "..", "tmp", "uploads"),
     storage: multer.diskStorage({
         destination: (req, file, cb) => {
             cb(null, path.resolve(__dirname, "..", "..", "tmp", "uploads"));
@@ -75,13 +74,32 @@ router.get('/products', auth, async(req, res)=>{
 
         console.log(produtos.length);
         
-        res.set('Content-Type', 'image/png')
+    
         res.status(200).json({ data: produtos })
 
     }catch(e){
         res.send(e.message)
     }
 })
+
+router.get('/products/:id', auth, async(req, res)=>{
+    
+    try{
+        
+        const leilao = await Produto.find({_id: req.params.id})
+        
+        if(!leilao || leilao.length === 0){
+            return res.send('Esse leilão não está cadastrado')
+        }
+        
+        
+        res.status(200).json(leilao)
+
+    }catch(e){
+        res.send(e.message)
+    }
+})
+
 
 
 module.exports = router
