@@ -66,7 +66,7 @@ router.post('/products', auth, upload.single('fotoLeilao'), async(req, res)=>{
 router.get('/products', auth, async(req, res)=>{
     
     try{
-        
+        console.log('usuario logado: ' + req.user)
         const produtos = await Produto.find({usuario:{$ne:req.user._id}})
         if(!produtos){
             return res.send('Esse usuário não tem produto cadastrado')

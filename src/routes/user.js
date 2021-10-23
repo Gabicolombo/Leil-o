@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken')
 const config = require('../config/off.json')
 const router = express.Router()
 
-router.get('/me', auth, async(req, res)=>{
+router.get('/user', auth, async(req, res)=>{
     try{
         res.send(req.user)
     }catch(e){

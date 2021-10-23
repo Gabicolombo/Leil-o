@@ -8,9 +8,6 @@ const { fileURLToPath } = require('url');
 
 const databaseConnection = require('./database/mongoConnection');
 
-const routerCadastro = require('./routes/cadastro');
-const routerLogin = require('./routes/login');
-
 const publicDirectory = resolve(__dirname, '../', 'public');
 
 const routerProduct = require('./routes/product');
@@ -26,8 +23,6 @@ app.use(cors());
 app.use(express.json());
 app.use(routerProduct)
 app.use(routerUser)
-app.use(routerCadastro)
-app.use(routerLogin)
 app.use('/files', express.static(resolve(__dirname, "..", "tmp", "uploads")));
 
 databaseConnection();
