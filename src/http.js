@@ -13,9 +13,14 @@ const publicDirectory = resolve(__dirname, '../', 'public');
 const routerProduct = require('./routes/product');
 const routerUser = require('./routes/user');
 
+
 const app = express();
+const { Socket } = require('./socket');
+const socket = new Socket();
 const serverHttp = http.createServer(app);
-const io = new Server(serverHttp, { cors: { origin: '*', methods: '*' } });
+socket.init(serverHttp);
+// const serverHttp = http.createServer(app);
+// const io = new Server(serverHttp, { cors: { origin: '*', methods: '*' } });
 
 app.use(express.static(publicDirectory));
 
@@ -27,5 +32,5 @@ app.use('/files', express.static(resolve(__dirname, "..", "tmp", "uploads")));
 
 databaseConnection();
 
-module.exports = { serverHttp, io };
+module.exports = { serverHttp };
 
