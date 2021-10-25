@@ -20,7 +20,8 @@ router.post('/products', auth, multer(upload).single('fotoLeilao'), async(req, r
         
     try {
         await produto.save();
-        const produtos = await Produto.find({usuario:{$ne:req.user._id}})
+        // const produtos = await Produto.find({usuario:{$ne:req.user._id}})
+        const produtos = await Produto.find({})
         // Socket.emitter('evento', produtos)
         return res.status(200).json({ message: 'Produto cadastrado com sucesso' })
     } catch(e) {

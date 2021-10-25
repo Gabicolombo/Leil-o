@@ -18,14 +18,14 @@ class Socket {
     
     io.on('connection', socket => {
       socket.on('joinRoom', (data) => {
-          const { name, room } = data;
+          const { name, room, roomName } = data;
           console.log('test', name, room);
-          const user = this.userJoin(socket.id, name, room._id);
+          const user = this.userJoin(socket.id, name, room);
       
           socket.join(user.room);
       
           // Welcome current user
-          socket.emit('message', formatMessage(botName, `Bem-vindo à sala: ${room.name}`));
+          socket.emit('message', formatMessage(botName, `Bem-vindo à sala: ${roomName}`));
       
           // Broadcast when a user connects
           socket.broadcast
