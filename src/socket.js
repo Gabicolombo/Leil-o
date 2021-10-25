@@ -18,24 +18,27 @@ class Socket {
     
     io.on('connection', socket => {
       socket.on('joinRoom', (data) => {
-          const { name, room, roomName } = data;
-          console.log('test', name, room);
-          const user = this.userJoin(socket.id, name, room);
+          const { username, room, roomName } = data;
+          console.log('test', username, room);
+          
+          // Usuario entra em uma sala
+          socket.join(room);
+          
+          // Registros do usuario e da sala a qual ele entrou
+          const user = this.addUserToRoom(socket.id, username, room);
+          
+          // Mensagem de boas vindas ao usuário que entrou na sala
+          socket.emit('message', formatMessage(botName, `Bem-vindo à sala: ${roomName}.`));
       
-          socket.join(user.room);
-      
-          // Welcome current user
-          socket.emit('message', formatMessage(botName, `Bem-vindo à sala: ${roomName}`));
-      
-          // Broadcast when a user connects
+          // Broadcast quando um usuário se conecta a sala
           socket.broadcast
             .to(user.room)
             .emit(
               'message',
-              formatMessage(botName, `${user.name} entrou na sala`)
+              formatMessage(botName, `${user.name} entrou na sala.`)
             );
       
-          // Send users and room info
+          // Envia informação de usuário e mensagens já existentes na sala
           io.to(user.room).emit('roomUsers', {
             room: user.room,
             users: this.getRoomUsers(user.room),
@@ -45,12 +48,11 @@ class Socket {
       
         // Listen for chatMessage
       socket.on('message', message => {
-          console.log('users', Socket.users);
           const user = this.getCurrentUser(socket.id);
     
           Socket.messages.push({
             room: user.room,
-            username: user.name,
+            name: user.name,
             text: message,
             time: moment().format('h:mm a')
           })
@@ -65,7 +67,7 @@ class Socket {
           if (user) {
             io.to(user.room).emit(
               'message',
-              formatMessage(botName, `${user.name} has left the chat`)
+              formatMessage(botName, `${user.name} deixou a sala.`)
             );
       
             // Send users and room info
@@ -79,30 +81,32 @@ class Socket {
       socket.on('broadcast', (produtos) => {
         socket.broadcast.emit('produtos', produtos)
       })
-
-      socket.on('disconnect', (data) => {
-        // Socket.userLeave(data.id);
-      });
     });
   }
 
-  userJoin(id, name, room) {
-    const user = { id, name, room };
+  addUserToRoom(id, username, room) {
+    const user = { socketId: id, name: username, room };
+
     // verifica se usuario já está na room
-    const userInRoom = Socket.users.find((user) => user.name == name && user.room === room);
-    if (userInRoom) userInRoom.id = id;
-    Socket.users.push(user);
+    const userInRoom = Socket.users.find((user) => user.name === username && user.room === room);
+    
+    if (userInRoom) {
+      userInRoom.id = id;
+    } else {
+      Socket.users.push(user);
+    }
+
     return user;
   }
 
   // get current user
   getCurrentUser(id){
-    return Socket.users.find(user => user.id === id)
+    return Socket.users.find(user => user.socketId === id)
   }
 
 // User leaves chat
   userLeave(id){
-    const index = Socket.users.findIndex(user => user.id === id)
+    const index = Socket.users.findIndex(user => user.socketId === id)
 
     if(index !== -1){
       return Socket.users.splice(index, 1)[0]
