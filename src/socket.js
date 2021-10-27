@@ -3,18 +3,26 @@ const { io } = require('./http');
 // const {userJoin, getCurrentUser, userLeave, getRoomUsers, getUsers} = require('./utils/users');
 const formatMessage = require('./utils/messages');
 
+const Produto = require('./database/product');
+
 const botName = 'Watson'
 
 class Socket {
   constructor(){}
 
-  init(server) {
+  async init(server) {
     if (Socket.server) return;
 
     const io = require('socket.io')(server,  { cors: { origin: '*', methods: '*' } });
 
     Socket.users = [];
-    Socket.messages = []
+    Socket.messages = [];
+    Socket.rooms = {};
+
+    const products = await Produto.find();
+    products && products.forEach((product) => {
+      Socket.rooms[product._id] = { currentValue: 0 }
+    });
     
     io.on('connection', socket => {
       socket.on('joinRoom', (data) => {
@@ -56,9 +64,15 @@ class Socket {
             text: message,
             time: moment().format('h:mm a')
           })
-      
+          
           io.to(user.room).emit('message', formatMessage(user.name, message, user.room));
-      });
+          
+          const room = Socket.rooms[user.room];
+          if (room.currentValue < message) {
+            Socket.rooms[user.room].currentValue = message;
+            io.to(user.room).emit('currentValue', { currentValue: message })
+          } 
+        });
       
         // Runs when client disconnects
       socket.on('disconnect', () => {
