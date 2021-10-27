@@ -7,10 +7,6 @@ const { Socket } = require('../socket');
 const upload = require('../config/multer');
 
 router.post('/products', auth, multer(upload).single('fotoLeilao'), async(req, res)=>{
-    if(new Date(req.body.dataInicio+":00") >= new Date(req.body.dataFinal+":00")) {
-        return res.status(400).json('Data de término não pode ser inferior a data de início')
-    }
-
     const produto = new Produto({
         ...req.body,
         localizacao: req.user.endereco,
