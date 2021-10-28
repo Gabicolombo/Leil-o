@@ -84,7 +84,7 @@ class Socket {
           console.log('room', room);
           if (room.currentValue < message) {
             // console.log('message', message);
-            // Socket.rooms[user.room].currentValue = message;
+            Socket.rooms[user.room].currentValue = message;
             // const index = Socket.rooms[user.room]['userValues'].findIndex((_user) => _user.name === user.name)
             // if (index !== -1) Socket.rooms[user.room]['userValues'][index].value = message;
             // const userValues = Socket.rooms[user.room]['userValues'];
@@ -174,7 +174,7 @@ class Socket {
     const interval = setInterval(async () => {
       Socket.rooms[key].currentTime--;
       if (Socket.rooms[key].currentTime <= 0) {
-        delete Socket.rooms[key];
+        // delete Socket.rooms[key];
         await Produto.findByIdAndUpdate(key, { status: 2 })
         clearInterval(interval);
       }
