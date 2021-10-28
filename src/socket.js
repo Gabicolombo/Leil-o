@@ -12,12 +12,14 @@ class Socket {
   static messages = [];
   static rooms = [];
 
+  static io;
+
   constructor(){}
 
   async init(server) {
     if (Socket.server) return;
 
-    const io = require('socket.io')(server,  { cors: { origin: '*', methods: '*' } });
+    Socket.io = require('socket.io')(server,  { cors: { origin: '*', methods: '*' } });
 
     Socket.users = [];
     Socket.messages = [];
@@ -34,7 +36,7 @@ class Socket {
       }
     });
     
-    io.on('connection', socket => {
+    Socket.io.on('connection', socket => {
       socket.on('joinRoom', (data) => {
           const { username, room, roomName } = data;
           console.log('test', username, room);
@@ -57,7 +59,7 @@ class Socket {
             );
       
           // Envia informação de usuário e mensagens já existentes na sala
-          io.to(user.room).emit('roomUsers', {
+          Socket.io.to(user.room).emit('roomUsers', {
             room: user.room,
             users: this.getRoomUsers(user.room),
             messages: this.getMessagesRoom(user.room)
@@ -75,7 +77,7 @@ class Socket {
             time: moment().format('h:mm a')
           })
           
-          io.to(user.room).emit('message', formatMessage(user.name, message, user.room));
+          Socket.io.to(user.room).emit('message', formatMessage(user.name, message, user.room));
           
           console.log('room', Socket.rooms);
 
@@ -88,7 +90,7 @@ class Socket {
             // if (index !== -1) Socket.rooms[user.room]['userValues'][index].value = message;
             // const userValues = Socket.rooms[user.room]['userValues'];
 
-            io.to(user.room).emit('currentValue', { currentValue: message, currentTime: room.currentTime })
+            Socket.io.to(user.room).emit('currentValue', { currentValue: message, currentTime: room.currentTime })
           }
       });
       
@@ -97,13 +99,13 @@ class Socket {
           const user = this.userLeave(socket.id);
       
           if (user) {
-            io.to(user.room).emit(
+            Socket.io.to(user.room).emit(
               'message',
               formatMessage(botName, `${user.name} deixou a sala.`)
             );
       
             // Send users and room info
-            io.to(user.room).emit('roomUsers', {
+            Socket.io.to(user.room).emit('roomUsers', {
               room: user.room,
               users: this.getRoomUsers(user.room)
             });
@@ -180,8 +182,8 @@ class Socket {
     }, 3000);
   }
 
-  static emitter(event, produtos) {
-    console.log('teste', Socket.users)
+  static emitter() {
+    Socket.io.sockets.emit('testEvent', { message: 'oi' })
   }
 }
 

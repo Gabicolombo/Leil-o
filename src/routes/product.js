@@ -33,6 +33,9 @@ router.get('/myproducts', auth, async(req, res)=>{
         if(!produtos || produtos.length === 0){
             return res.send('Você não tem nenhum produto cadastrado')
         }
+
+        // Socket.emitter();
+
         return res.status(200).json({data:produtos})
 
     }catch(e){
