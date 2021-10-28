@@ -2,12 +2,17 @@ const moment = require('moment')
 const { io } = require('./http');
 // const {userJoin, getCurrentUser, userLeave, getRoomUsers, getUsers} = require('./utils/users');
 const formatMessage = require('./utils/messages');
+const jsBrasil = require('js-brasil');
 
 const Produto = require('./database/product');
 
 const botName = 'Watson'
 
 class Socket {
+  static users = [];
+  static messages = [];
+  static rooms = [];
+
   constructor(){}
 
   async init(server) {
@@ -19,9 +24,15 @@ class Socket {
     Socket.messages = [];
     Socket.rooms = {};
 
-    const products = await Produto.find();
+    const products = await Produto.find({ status: 0 });
+    console.log('prod', products);
     products && products.forEach((product) => {
-      Socket.rooms[product._id] = { currentValue: 0 }
+      Socket.rooms[product._id] = { 
+        currentValue: product.valorInicial, 
+        userValues: [],
+        startDate: product.dataInicio,
+        currentTime: 600
+      }
     });
     
     io.on('connection', socket => {
@@ -67,12 +78,20 @@ class Socket {
           
           io.to(user.room).emit('message', formatMessage(user.name, message, user.room));
           
+          console.log('room', Socket.rooms);
+
           const room = Socket.rooms[user.room];
+          console.log('room', room);
           if (room.currentValue < message) {
-            Socket.rooms[user.room].currentValue = message;
-            io.to(user.room).emit('currentValue', { currentValue: message })
-          } 
-        });
+            // console.log('message', message);
+            // Socket.rooms[user.room].currentValue = message;
+            // const index = Socket.rooms[user.room]['userValues'].findIndex((_user) => _user.name === user.name)
+            // if (index !== -1) Socket.rooms[user.room]['userValues'][index].value = message;
+            // const userValues = Socket.rooms[user.room]['userValues'];
+
+            io.to(user.room).emit('currentValue', { currentValue: message, currentTime: room.currentTime })
+          }
+      });
       
         // Runs when client disconnects
       socket.on('disconnect', () => {
@@ -102,13 +121,21 @@ class Socket {
     const user = { socketId: id, name: username, room };
 
     // verifica se usuario já está na room
-    const userInRoom = Socket.users.find((user) => user.name === username && user.room === room);
-    
-    if (userInRoom) {
-      userInRoom.id = id;
+    const userInRoom = Socket.users.findIndex((user) => user.name === username && user.room === room);
+
+    if (userInRoom !== -1) {
+      Socket.users[userInRoom].id = id;
     } else {
       Socket.users.push(user);
     }
+
+    // const userValue = Socket.rooms[room]['userValues'].findIndex((user) => user.name === username);
+    // if (userValue === -1) {
+    //   Socket.rooms[room]['userValues'].push({ ...user, value: 0 })
+    // } else {
+    //   const currentUserValue = Socket.rooms[room]['userValues'][userValue];
+    //   Socket.rooms[room]['userValues'][userValue] = { ...currentUserValue, id };
+    // }
 
     return user;
   }
@@ -139,6 +166,19 @@ class Socket {
   getMessagesRoom(room) {
     const messagesRoom = Socket.messages.filter((message) => message.room === room);
     return messagesRoom;
+  }
+
+  static async decrementTime(key) {
+    console.log('decrement');
+    await Produto.findByIdAndUpdate(key, { status: 1 })
+    const interval = setInterval(async () => {
+      Socket.rooms[key].currentTime--;
+      if (Socket.rooms[key].currentTime <= 0) {
+        delete Socket.rooms[key];
+        await Produto.findByIdAndUpdate(key, { status: 2 })
+        clearInterval(interval);
+      }
+    }, 3000);
   }
 
   static emitter(event, produtos) {

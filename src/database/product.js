@@ -29,6 +29,10 @@ const ProductSchema = new mongoose.Schema({
     },
     urlImagem: {
         type: String
+    },
+    status: {
+        type: Number, // 0: Não iniciado 1: Iniciado 2: Finalizado
+        default: 0
     } 
 })
 
