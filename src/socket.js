@@ -2,7 +2,6 @@ const moment = require('moment')
 const { io } = require('./http');
 // const {userJoin, getCurrentUser, userLeave, getRoomUsers, getUsers} = require('./utils/users');
 const formatMessage = require('./utils/messages');
-const jsBrasil = require('js-brasil');
 
 const Produto = require('./database/product');
 
