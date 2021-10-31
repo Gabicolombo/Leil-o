@@ -4,17 +4,18 @@ const { Socket } = require('./socket');
 
 const port = process.env.PORT || 2828;
 
-// cron.schedule('*/5 * * * * *', () => {
-//   const rooms = Socket.rooms;
-//   Object.keys(rooms).forEach(async (key) => {
-//     const { startDate } = rooms[key];
-//     if (new Date() > new Date(startDate)) {
-//       console.log('começou', key);
-//       await Socket.decrementTime(key);
-//     }
-//   });
-//   console.log(Socket.rooms);
-// });
+cron.schedule('*/5 * * * * *', () => {
+  const rooms = Socket.rooms;
+  Object.keys(rooms).forEach(async (key) => {
+    if ('startDate' in rooms[key] && 'hasStarted' in rooms[key]) {
+      const { startDate, hasStarted } = rooms[key];
+      if (new Date() > new Date(startDate) && hasStarted === false) {
+        console.log('começou', key);
+        await Socket.startRoomTime(key);
+      }
+    }
+  });
+});
 
 serverHttp.listen(port, () => console.log(`Server is running on PORT ${port}`));
 
