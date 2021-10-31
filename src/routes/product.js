@@ -16,8 +16,8 @@ router.post('/products', auth, multer(upload).single('fotoLeilao'), async(req, r
         
     try {
         await produto.save();
-        
-        const produtos = await Produto.find({})
+
+        Socket.refreshRooms();
         
         return res.status(200).json({ message: 'Produto cadastrado com sucesso' })
     } catch(e) {
@@ -27,14 +27,11 @@ router.post('/products', auth, multer(upload).single('fotoLeilao'), async(req, r
 
 router.get('/myproducts', auth, async(req, res)=>{
     try{
-        
         const produtos = await Produto.find({usuario: req.user._id})
         
         if(!produtos || produtos.length === 0){
             return res.send('Você não tem nenhum produto cadastrado')
         }
-
-        // Socket.emitter();
 
         return res.status(200).json({data:produtos})
 

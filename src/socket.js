@@ -25,16 +25,7 @@ class Socket {
     Socket.messages = [];
     Socket.rooms = {};
 
-    const products = await Produto.find({ status: 0 });
-    console.log('prod', products);
-    products && products.forEach((product) => {
-      Socket.rooms[product._id] = { 
-        currentValue: product.valorInicial, 
-        userValues: [],
-        startDate: product.dataInicio,
-        currentTime: 600
-      }
-    });
+    Socket.refreshRooms();
     
     Socket.io.on('connection', socket => {
       socket.on('joinRoom', (data, callback) => {
@@ -62,7 +53,8 @@ class Socket {
             room: user.room,
             users: this.getRoomUsers(user.room),
             messages: this.getMessagesRoom(user.room),
-            currentValue: Socket.rooms[user.room] && Socket.rooms[user.room].currentValue
+            currentValue: Socket.rooms[user.room] && Socket.rooms[user.room].currentValue,
+            leftTime: Socket.rooms[user.room] && Socket.rooms[user.room].currentTime
           });
 
           Socket.io.to(user.room).emit('roomUsers', {
@@ -172,20 +164,38 @@ class Socket {
   }
 
   static async decrementTime(key) {
-    console.log('decrement');
+    console.log('decrementTime');
+
     await Produto.findByIdAndUpdate(key, { status: 1 })
     const interval = setInterval(async () => {
       Socket.rooms[key].currentTime--;
       if (Socket.rooms[key].currentTime <= 0) {
-        // delete Socket.rooms[key];
-        await Produto.findByIdAndUpdate(key, { status: 2 })
+        Socket.io.to(key).emit('finalTime', true);
+        delete Socket.rooms[key];
+        await Produto.findByIdAndUpdate(key, { status: 2, finalValue: Socket.rooms[key].currentValue })
         clearInterval(interval);
       }
     }, 3000);
   }
 
-  static emitter() {
-    Socket.io.sockets.emit('testEvent', { message: 'oi' })
+  static async refreshRooms() {
+    console.log('refreshRooms')
+
+    // Busca produtos que ainda não iniciaram a contagem do tempo
+    const products = await Produto.find({ status: 0 });
+
+    // Atualiza as salas do socket com as informações dos leilões ainda não iniciados
+    products && products.forEach((product) => {
+      let currentTime = 600;
+      if (product.dataInicio && new Date() > product.dataInicio) 
+        currentTime = new Date().getTime - product.dataInicio
+      
+      Socket.rooms[product._id] = { 
+        currentValue: product.valorInicial,
+        startDate: product.dataInicio,
+        currentTime
+      }
+    });
   }
 }
 
