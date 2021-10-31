@@ -37,9 +37,8 @@ class Socket {
     });
     
     Socket.io.on('connection', socket => {
-      socket.on('joinRoom', (data) => {
+      socket.on('joinRoom', (data, callback) => {
           const { username, room, roomName } = data;
-          console.log('test', username, room);
           
           // Usuario entra em uma sala
           socket.join(room);
@@ -57,12 +56,18 @@ class Socket {
               'message',
               formatMessage(botName, `${user.name} entrou na sala.`)
             );
-      
+
           // Envia informação de usuário e mensagens já existentes na sala
-          Socket.io.to(user.room).emit('roomUsers', {
+          callback({
             room: user.room,
             users: this.getRoomUsers(user.room),
-            messages: this.getMessagesRoom(user.room)
+            messages: this.getMessagesRoom(user.room),
+            currentValue: Socket.rooms[user.room] && Socket.rooms[user.room].currentValue
+          });
+
+          Socket.io.to(user.room).emit('roomUsers', {
+            room: user.room,
+            users: this.getRoomUsers(user.room)
           });
       });
       
@@ -77,24 +82,21 @@ class Socket {
             time: moment().format('h:mm a')
           })
           
-          Socket.io.to(user.room).emit('message', formatMessage(user.name, message, user.room));
-          
           console.log('room', Socket.rooms);
 
           const room = Socket.rooms[user.room];
           console.log('room', room);
-          if (room.currentValue < message) {
-            // console.log('message', message);
+          if (room && room.currentValue < message) {
             Socket.rooms[user.room].currentValue = message;
             // const index = Socket.rooms[user.room]['userValues'].findIndex((_user) => _user.name === user.name)
             // if (index !== -1) Socket.rooms[user.room]['userValues'][index].value = message;
             // const userValues = Socket.rooms[user.room]['userValues'];
-
+            Socket.io.to(user.room).emit('message', formatMessage(user.name, message, user.room));
             Socket.io.to(user.room).emit('currentValue', { currentValue: message, currentTime: room.currentTime })
           }
       });
       
-        // Runs when client disconnects
+        // Executa quando um cliente se desconecta
       socket.on('disconnect', () => {
           const user = this.userLeave(socket.id);
       
