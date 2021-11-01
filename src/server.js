@@ -4,13 +4,12 @@ const { Socket } = require('./socket');
 
 const port = process.env.PORT || 2828;
 
-cron.schedule('*/5 * * * * *', () => {
+cron.schedule('* * * * *', () => {
   const rooms = Socket.rooms;
   Object.keys(rooms).forEach(async (key) => {
     if ('startDate' in rooms[key] && 'hasStarted' in rooms[key]) {
       const { startDate, hasStarted } = rooms[key];
       if (new Date() > new Date(startDate) && hasStarted === false) {
-        console.log('começou', key);
         await Socket.startRoomTime(key);
       }
     }
