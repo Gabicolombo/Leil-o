@@ -193,7 +193,7 @@ class Socket {
     const user = { socketId, id: userId, room: roomId, name: username };
 
     // Verifica se já existe um usuário com o id e sala fornecidos n
-    const userInRoom = Socket.users.findIndex((user) => user.id === userId && user.room === room);
+    const userInRoom = Socket.users.findIndex((user) => user.id === userId && user.room === roomId);
 
     if (userInRoom !== -1) {
       // Caso usuário já esteja incluído na sala, atualizar seu id do socket
@@ -321,8 +321,10 @@ class Socket {
     products && products.forEach((product) => {
       // Tempo padrão de duração do leilão (600 segundos ~ 10 minutos)
       let currentTime = 600;
-      if (product.dataInicio && new Date() > product.dataInicio) 
-        currentTime = new Date().getTime - product.dataInicio
+      const startDate = new Date(product.dataInicio).getTime() / 1000;
+      const currentDate = new Date().getTime() / 1000;
+      if (product.dataInicio && currentDate > startDate) 
+        currentTime = currentDate - startDate;
       
       Socket.rooms[product._id] = { 
         currentValue: product.valorInicial,
