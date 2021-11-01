@@ -9,9 +9,9 @@ const botName = 'Watson'
 class Socket {
   /**
    * Gerencia as salas disponíveis no socket de acordo com os registros da base de dados.
-   * Cada sala corresponde a um leilão, mas os registros mantidos nesse atributo `rooms` 
-   * são somente aqueles com atributo `status` igual 0. Isso significa afirmar que serão mantidos 
-   * somente aqueles que ainda não iniciaram sua contagem de tempo. Os registros com status 
+   * Cada sala corresponde a um leilão, mas os registros de leilão mantidos nesse atributo `rooms` 
+   * são somente aqueles cujo campo `status` igual 0 no banco de dados. Isso significa afirmar que 
+   * serão mantidos somente aqueles que ainda não iniciaram sua contagem de tempo. Os registros com status 
    * diferente de 0, indicam que o leilão ou já iniciou, ou já finalizou. Portanto, não mantê-los
    * armazenados nesse atributo significa dizer que não será possível os clientes comunicarem através
    * dessa sala, visto que ela não está mais disponível.
