@@ -133,10 +133,10 @@ class Socket {
 
           /**
            * Recupera a sala do usuário do atributo `rooms` da classe Socket. Ao recuperar, 
-           * verifica se o valor atual da sala (leilão) é menor que o valor emitido pelo cliente, 
+           * verifica se o valor atual da sala (leilão) é maior que o valor emitido pelo cliente, 
            * se sim, atualiza o valor atual da sala pelo novo valor emitido pelo cliente e notifica
-           * com a nova mensagem e o valor atual todos os usuários na mesma sala que o cliente quem 
-           * emitiu a mensagem.
+           * todos os usuários na mesma sala que o cliente que emitiu a mensagem com a nova mensagem 
+           * e o valor atual do leilão.
            */
 
           const room = Socket.rooms[user.room];
