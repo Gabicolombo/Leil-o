@@ -142,7 +142,7 @@ class Socket {
           const room = Socket.rooms[user.room];
           if (room && room.currentValue < message) {
             Socket.rooms[user.room].currentValue = message;
-
+            Socket.rooms[user.room].userWinner = user.name;
             // Emite um evento identificado por 'message' para os clientes em uma determinada sala 
             // com o conteúdo da mensagem
             Socket.io.to(user.room).emit('message', formatMessage(user.name, message, user.room));
@@ -300,8 +300,12 @@ class Socket {
     */
   static async finishRoomTime(id) {
     console.log('method: finishRoomTime');
-    Socket.io.to(id).emit('finalTime', true);
-    await Produto.findByIdAndUpdate(id, { status: 2, finalValue: Socket.rooms[id].currentValue })
+    console.log('socket', Socket.rooms[id]);
+    await Produto.findByIdAndUpdate(id, { 
+      status: 2, 
+      valorFinal: Socket.rooms[id].currentValue,
+      usuarioGanhador: Socket.rooms[id].userWinner,
+    });
     delete Socket.rooms[id];
   }
 
@@ -320,7 +324,7 @@ class Socket {
     // dados que ainda não foram iniciados (status == 0)
     products && products.forEach((product) => {
       // Tempo padrão de duração do leilão (600 segundos ~ 10 minutos)
-      let currentTime = 600;
+      let currentTime = 100;
       const startDate = new Date(product.dataInicio).getTime() / 1000;
       const currentDate = new Date().getTime() / 1000;
       if (product.dataInicio && currentDate > startDate) 
@@ -330,6 +334,7 @@ class Socket {
         currentValue: product.valorInicial,
         startDate: product.dataInicio,
         currentTime,
+        userWinner: '',
         hasStarted: false
       };
     });

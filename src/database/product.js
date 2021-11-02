@@ -16,8 +16,16 @@ const ProductSchema = new mongoose.Schema({
         ref:'Usuario'
     },
     valorInicial:{
-        type:Number, // talvez irá mudar
+        type:Number,
         required:true
+    },
+    valorFinal:{
+        type:Number,
+        required:false
+    },
+    usuarioGanhador: {
+        type:String,
+        required:false
     },
     dataInicio:{
         type:String,
