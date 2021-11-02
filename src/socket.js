@@ -324,7 +324,7 @@ class Socket {
     // dados que ainda não foram iniciados (status == 0)
     products && products.forEach((product) => {
       // Tempo padrão de duração do leilão (600 segundos ~ 10 minutos)
-      let currentTime = 100;
+      let currentTime = 600;
       const startDate = new Date(product.dataInicio).getTime() / 1000;
       const currentDate = new Date().getTime() / 1000;
       if (product.dataInicio && currentDate > startDate) 
