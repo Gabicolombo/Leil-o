@@ -4,7 +4,11 @@ const { Socket } = require('./socket');
 
 const port = process.env.PORT || 2828;
 
-
+/**
+ * Rotina que executa a cada 1 minuto, verificando se existe alguma sala de leilão com a data de início
+ * igual a data atual. Com isso, o leilão será iniciado de forma automática.
+ * 
+ */
 cron.schedule('* * * * *', () => {
   const rooms = Socket.rooms;
   Object.keys(rooms).forEach(async (key) => {

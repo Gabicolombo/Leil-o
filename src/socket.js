@@ -177,6 +177,12 @@ class Socket {
           }
       });
 
+      /**
+       * Ouve um evento emitido pelo cliente identificado por `disconnect`. O evento recebe um
+       * listener que basicamente é uma função que vai remover o usuário do atributo `users` da 
+       * classe Socket baseado no id do socket e o socket vai emitir uma mensagem aos usuários
+       * que estão na sala do usuário que saiu, notificando a saída desse usuário.
+       */
       socket.on('disconnect', () => {
           
         const user = this.userLeave(socket.id);
