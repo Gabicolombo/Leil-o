@@ -157,9 +157,10 @@ class Socket {
        * classe Socket baseado no id do socket e o socket vai emitir uma mensagem aos usuários
        * que estão na sala do usuário que saiu, notificando a saída desse usuário.
        */
-      socket.on('disconnect', () => {
+      socket.on('disconnected', () => {
+          
           const user = this.userLeave(socket.id);
-      
+          
           if (user) {
             // Emite um evento identificado por `message` para os clientes da sala sinalizando a 
             // saída do usuário
@@ -174,6 +175,26 @@ class Socket {
               users: this.getRoomUsers(user.room)
             });
           }
+      });
+
+      socket.on('disconnect', () => {
+          
+        const user = this.userLeave(socket.id);
+        
+        if (user) {
+          // Emite um evento identificado por `message` para os clientes da sala sinalizando a 
+          // saída do usuário
+          Socket.io.to(user.room).emit(
+            'message',
+            formatMessage(botName, `${user.name} deixou a sala.`)
+          );
+    
+          // Emite um evento identificado por `roomUsers` com a lista de usuários da sala atualizados
+          Socket.io.to(user.room).emit('roomUsers', {
+            room: user.room,
+            users: this.getRoomUsers(user.room)
+          });
+        }
       });
     });
   }
@@ -220,7 +241,7 @@ class Socket {
    */
   userLeave(socketId){
     const index = Socket.users.findIndex(user => user.socketId === socketId)
-
+    
     if(index !== -1){
       return Socket.users.splice(index, 1)[0]
     }
@@ -322,7 +343,7 @@ class Socket {
     // dados que ainda não foram iniciados (status == 0)
     products && products.forEach((product) => {
       // Tempo padrão de duração do leilão (600 segundos ~ 10 minutos)
-      let currentTime = 200;
+      let currentTime = 300;
       
       Socket.rooms[product._id] = { 
         currentValue: product.valorInicial,
