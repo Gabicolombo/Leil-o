@@ -16,7 +16,7 @@ class Socket {
    * armazenados nesse atributo significa dizer que não será possível os clientes comunicarem através
    * dessa sala, visto que ela não está mais disponível.
    */
-   static rooms = [];
+   static rooms = {};
 
   /**
    * Corresponde a todas as mensagens de todas as salas no socket do servidor. Essas mensagens são 
@@ -41,8 +41,6 @@ class Socket {
    * @param {http.Server} server - A Instância de um servidor HTTP
    */
   async init(server) {
-    if (Socket.server) return;
-
     Socket.io = require('socket.io')(server,  { cors: { origin: '*', methods: '*' } });
 
     Socket.users = [];
@@ -324,11 +322,7 @@ class Socket {
     // dados que ainda não foram iniciados (status == 0)
     products && products.forEach((product) => {
       // Tempo padrão de duração do leilão (600 segundos ~ 10 minutos)
-      let currentTime = 100;
-      const startDate = new Date(product.dataInicio).getTime() / 1000;
-      const currentDate = new Date().getTime() / 1000;
-      if (product.dataInicio && currentDate > startDate) 
-        currentTime = currentDate - startDate;
+      let currentTime = 200;
       
       Socket.rooms[product._id] = { 
         currentValue: product.valorInicial,
